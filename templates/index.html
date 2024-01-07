@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
+
+        h1,
+        h2 {
+            color: #4e99e9;
+        }
+
+        .search {
+        display: inline-block;
+        position: relative;
+        }
+
+        .search input[type="text"] {
+        width: 300px;
+        padding: 10px;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search button[type="submit"] {
+        background-color: #4e99e9;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: absolute;
+        top: 0;
+        right: 0;
+        transition: .9s ease;
+        }
+
+        .search button[type="submit"]:hover {
+        transform: scale(1.1);
+        color: rgb(255, 255, 255);
+        background-color: blue;
+        }
+
+        .movie-info,
+        .recommended-movies {
+            margin-top: 20px;
+        }
+
+        .movie-details {
+            display: flex;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .movie-details img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 10px 0 0 10px;
+            border: none; 
+        }
+
+        .movie-details-info {
+            padding: 10px;
+            flex-grow: 1;
+        }
+
+        .movie-details-info strong {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .movie-details-info span {
+            display: block;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+
+        .movie-list {
+            display: flex;
+            flex-wrap: wrap;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .movie-details {
+            flex-basis: calc(48% - 20px);
+            margin: 1%;
+        }
+
+        .large-title {
+            font-size: 24px;
+        }
+
+        .large-placeholder-image {
+            width: 300px;
+            height: 450px;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .not-found {
+            color: red;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Search form -->
+    <h1>Tìm Kiếm Phim </h1>
+    <form action="/search" method="post" class="search">
+        <label for="query">Nhập tên phim:</label>
+        <input placeholder="Ví dụ: avatar" type="text" id="query" name="query">
+        <button type="submit">Tìm kiếm</button>
+    </form>
+
+   <!-- Hiển thị kết quả tìm kiếm -->
+    {% if search_movie_info %}
+    <div class="movie-info">
+        <h2 class="result-title">Kết quả tìm kiếm của '{{ query }}'</h2>
+        <ul>
+            <li class="movie-details">
+                <img src="{{ search_movie_info.poster_url }}" alt="Movie Poster" class="large-placeholder-image">
+                <div class="movie-details-info">
+                    <strong class="large-title">{{ search_movie_info.title }}</strong>
+                    <span><strong>Đạo diễn:</strong> {{ search_movie_info.director }}</span>
+                    <span><strong>Thể loại:</strong> {{ search_movie_info.genres }}</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+    {% elif not_found %}
+    <div class="not-found">
+        <p>Phim '{{ query }}' bạn đang tìm chưa có trên hệ thống.</p>
+    </div>
+    {% endif %}
+
+   <!-- Hiển thị các phim được đề xuất -->
+    {% if recommended_movies %}
+    <div class="recommended-movies">
+        <h2>Gợi ý phim cho '{{ query }}'</h2>
+        <ul class="movie-list">
+            {% for movie in recommended_movies %}
+            <li class="movie-details">
+                <img src="{{ url_for('static', filename='hinhanh/goiy.jpg') }}" alt="Placeholder Image" class="large-placeholder-image">
+                <div class="movie-details-info">
+                    <strong>{{ movie.title }}</strong>
+                    <span><strong>Đạo diễn:</strong> {{ movie.director }}</span>
+                    <span><strong>Thể loại:</strong> {{ movie.genres }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+</body>
+
+</html>
